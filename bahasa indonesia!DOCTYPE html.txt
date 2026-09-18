@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Exam Bahasa Indonesia - Teks Deskripsi & LHO</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- SheetJS CDN for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(30, 58, 138, 0.82)), 
+                        url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.93);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between custom-scrollbar">
+
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-700/50 text-white py-3 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            
+            <!-- Navigation Left Side: Home Button & App Title -->
+            <div class="flex items-center gap-3">
+                <!-- Top-Left Navigation Button to Return Home/Login -->
+                <button onclick="navGoHome()" title="Kembali ke Halaman Utama / Beranda" class="group px-3 py-2 rounded-xl bg-teal-600/30 hover:bg-teal-500/40 border border-teal-500/40 text-teal-300 hover:text-white transition flex items-center gap-2 text-xs font-bold active:scale-95">
+                    <i class="fa-solid fa-house text-sm group-hover:scale-110 transition-transform"></i>
+                    <span class="hidden sm:inline">Beranda</span>
+                </button>
+
+                <div class="h-6 w-px bg-slate-700 mx-0.5"></div>
+
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center text-slate-900 font-bold text-lg shadow-lg shadow-teal-500/20">
+                        <i class="fa-solid fa-book-open-reader"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-sm sm:text-base tracking-wide leading-tight">E-Exam Bahasa Indonesia</h1>
+                        <p class="text-[10px] sm:text-xs text-slate-400">SMP • 7A (Deskripsi) & 8E/8F (LHO)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Right Action Buttons -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="switchTab('leaderboard')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/30 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-trophy text-amber-400"></i>
+                    <span class="hidden sm:inline">10 Besar / Leaderboard</span>
+                </button>
+                <button onclick="openGuruModal()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span class="hidden sm:inline">Portal Guru</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 my-2">
+
+        <div id="view-login" class="max-w-md mx-auto">
+            <div class="glass-panel rounded-2xl shadow-2xl p-6 sm:p-8">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">Masuk Ujian Siswa</h2>
+                    <p class="text-xs text-slate-500 mt-1">Lengkapi nama dan pilih kelas untuk memulai kuis/ujian.</p>
+                </div>
+
+                <form id="form-login-siswa" onsubmit="handleStartExam(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Lengkap Siswa</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-3 top-3.5 text-slate-400 text-sm"></i>
+                            <input type="text" id="input-nama" required placeholder="Contoh: Budi Santoso" class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none text-sm transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Pilihan Kelas & Materi</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-school absolute left-3 top-3.5 text-slate-400 text-sm"></i>
+                            <select id="input-kelas" required class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none text-sm transition appearance-none bg-white">
+                                <option value="" disabled selected>-- Pilih Kelas Anda --</option>
+                                <option value="7A">Kelas 7A (Materi: Teks Deskripsi)</option>
+                                <option value="8E">Kelas 8E (Materi: Teks LHO)</option>
+                                <option value="8F">Kelas 8F (Materi: Teks LHO)</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-slate-400 text-xs pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 flex gap-2.5 items-start">
+                        <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-sm"></i>
+                        <div>
+                            <strong>Informasi Ujian:</strong>
+                            <ul class="list-disc list-inside mt-1 space-y-0.5 text-slate-700">
+                                <li>Waktu Pengerjaan: <strong>120 Menit</strong> (100 Soal)</li>
+                                <li>Soal: 50 PG, 10 PGK, 10 B/S, 10 Isian, 10 Uraian</li>
+                                <li>Materi otomatis disesuaikan berdasarkan kelas</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-teal-600/30 transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
+                        <span>Mulai Kerjakan Ujian</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="view-exam" class="hidden">
+            <!-- Top Sticky Info Bar -->
+            <div class="glass-panel rounded-2xl p-4 mb-6 flex flex-wrap gap-4 items-center justify-between shadow-lg">
+                <div class="flex items-center gap-3">
+                    <button onclick="navGoHome()" title="Kembali ke Awal" class="p-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 transition text-xs flex items-center gap-1 font-bold">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Beranda</span>
+                    </button>
+                    <div class="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-sm">
+                        <span id="display-avatar-class">7A</span>
+                    </div>
+                    <div>
+                        <h3 id="display-exam-nama" class="font-bold text-slate-800 text-sm sm:text-base leading-tight">Nama Siswa</h3>
+                        <p id="display-exam-kelas" class="text-xs text-slate-500">Kelas 7A • Teks Deskripsi</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 ml-auto">
+                    <div class="flex items-center gap-2 bg-slate-900 text-amber-400 font-mono font-bold px-4 py-2 rounded-xl text-base sm:text-lg border border-amber-500/30 shadow-inner">
+                        <i class="fa-solid fa-clock animate-pulse"></i>
+                        <span id="exam-timer">02:00:00</span>
+                    </div>
+
+                    <button onclick="confirmSubmitExam()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition">
+                        Selesai Ujian
+                    </button>
+                </div>
+            </div>
+
+            <!-- Exam Grid Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Question Box -->
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="glass-panel rounded-2xl p-6 shadow-xl relative min-h-[420px] flex flex-col justify-between">
+                        <div>
+                            <!-- Question Header Meta -->
+                            <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 bg-teal-600 text-white font-bold rounded-lg text-xs">
+                                        Soal No. <span id="q-number">1</span> / 100
+                                    </span>
+                                    <span id="q-type-badge" class="px-2.5 py-1 bg-slate-100 text-slate-700 font-medium rounded-lg text-xs border border-slate-200">
+                                        Pilihan Ganda
+                                    </span>
+                                </div>
+                                <span class="text-xs text-slate-400 font-semibold" id="q-score-weight">Bobot: 1 Poin</span>
+                            </div>
+
+                            <!-- Question Text -->
+                            <div id="q-text-container" class="text-sm sm:text-base text-slate-800 leading-relaxed font-normal mb-6 space-y-3">
+                                <!-- Dynamic Question Text -->
+                            </div>
+
+                            <!-- Options Form -->
+                            <div id="q-options-container" class="space-y-3">
+                                <!-- Dynamic Answer Controls -->
+                            </div>
+                        </div>
+
+                        <!-- Prev/Next Footer -->
+                        <div class="flex justify-between items-center pt-6 mt-6 border-t border-slate-200">
+                            <button id="btn-prev-q" onclick="navigateQuestion(-1)" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs sm:text-sm rounded-xl transition flex items-center gap-2">
+                                <i class="fa-solid fa-arrow-left"></i>
+                                <span>Sebelumnya</span>
+                            </button>
+
+                            <button id="btn-next-q" onclick="navigateQuestion(1)" class="px-5 py-2 bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs sm:text-sm rounded-xl shadow transition flex items-center gap-2">
+                                <span>Selanjutnya</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Number Navigation Grid -->
+                <div class="lg:col-span-1">
+                    <div class="glass-panel rounded-2xl p-5 shadow-xl sticky top-20">
+                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mb-3 flex items-center justify-between">
+                            <span>Navigasi Soal</span>
+                            <span id="answered-count-badge" class="text-teal-600 font-bold">0/100</span>
+                        </h4>
+
+                        <select id="filter-q-type" onchange="renderQuestionGrid()" class="w-full text-xs py-1.5 px-2 rounded-lg border border-slate-300 mb-3 bg-white outline-none">
+                            <option value="ALL">Semua Jenis Soal (100)</option>
+                            <option value="PG">1. Pilihan Ganda (1-50)</option>
+                            <option value="PGK">2. PG Kompleks (51-60)</option>
+                            <option value="BS">3. Benar / Salah (61-70)</option>
+                            <option value="ISIAN">4. Isian Singkat (71-80)</option>
+                            <option value="URAIAN">5. Uraian / Essay (81-100)</option>
+                        </select>
+
+                        <div class="flex items-center gap-3 text-[10px] text-slate-500 mb-3 border-b border-slate-200 pb-2">
+                            <div class="flex items-center gap-1"><span class="w-3 h-3 bg-emerald-500 rounded"></span> Dijawab</div>
+                            <div class="flex items-center gap-1"><span class="w-3 h-3 bg-slate-200 rounded"></span> Belum</div>
+                            <div class="flex items-center gap-1"><span class="w-3 h-3 bg-teal-600 rounded"></span> Aktif</div>
+                        </div>
+
+                        <div id="q-grid-container" class="grid grid-cols-5 gap-1.5 max-h-[340px] overflow-y-auto pr-1 custom-scrollbar">
+                            <!-- Dynamic 100 Grid Buttons -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-result" class="hidden">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 shadow-2xl mb-8 text-center max-w-3xl mx-auto">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Hasil Ujian Bahasa Indonesia</h2>
+                <p id="result-student-info" class="text-sm text-slate-600 mt-1">Nama Siswa • Kelas 7A (Teks Deskripsi)</p>
+
+                <!-- Score Card -->
+                <div class="my-6 p-6 bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 rounded-2xl border border-teal-500/30 text-white shadow-xl max-w-md mx-auto">
+                    <p class="text-xs font-semibold text-teal-300 uppercase tracking-widest mb-1">Nilai Akhir Anda</p>
+                    <div id="result-total-score" class="text-5xl font-black text-emerald-400">0.0</div>
+                    <p id="result-grade-label" class="text-xs text-slate-300 mt-2">Predikat: Sangat Baik</p>
+                </div>
+
+                <!-- Score Breakdown -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs mb-6 text-slate-700">
+                    <div class="p-2.5 bg-slate-100 rounded-xl border border-slate-200">
+                        <span class="block text-slate-400 text-[10px] uppercase font-bold">PG (50)</span>
+                        <span id="score-pg" class="font-bold text-slate-800 text-sm">0/50</span>
+                    </div>
+                    <div class="p-2.5 bg-slate-100 rounded-xl border border-slate-200">
+                        <span class="block text-slate-400 text-[10px] uppercase font-bold">PGK (10)</span>
+                        <span id="score-pgk" class="font-bold text-slate-800 text-sm">0/10</span>
+                    </div>
+                    <div class="p-2.5 bg-slate-100 rounded-xl border border-slate-200">
+                        <span class="block text-slate-400 text-[10px] uppercase font-bold">B/S (10)</span>
+                        <span id="score-bs" class="font-bold text-slate-800 text-sm">0/10</span>
+                    </div>
+                    <div class="p-2.5 bg-slate-100 rounded-xl border border-slate-200">
+                        <span class="block text-slate-400 text-[10px] uppercase font-bold">Isian (10)</span>
+                        <span id="score-isian" class="font-bold text-slate-800 text-sm">0/10</span>
+                    </div>
+                    <div class="p-2.5 bg-slate-100 rounded-xl border border-slate-200 col-span-2 sm:col-span-1">
+                        <span class="block text-slate-400 text-[10px] uppercase font-bold">Uraian (10)</span>
+                        <span id="score-uraian" class="font-bold text-slate-800 text-sm">0/20</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="navGoHome()" class="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs transition flex items-center gap-2 shadow">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Kembali ke Beranda Utama</span>
+                    </button>
+                    <button onclick="switchTab('leaderboard')" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl text-xs transition flex items-center gap-2 shadow">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Lihat Leaderboard Top 10</span>
+                    </button>
+                    <button onclick="toggleDiscussionView()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition flex items-center gap-2 shadow">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <span id="btn-toggle-disc-text">Lihat Pembahasan Soal</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Discussion Drawer -->
+            <div id="discussion-container" class="hidden glass-panel rounded-2xl p-6 shadow-2xl max-w-4xl mx-auto space-y-6">
+                <div class="border-b border-slate-200 pb-4 flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-teal-600"></i>
+                        <span>Kunci Jawaban & Pembahasan Lengkap</span>
+                    </h3>
+                    <span class="text-xs text-slate-500">100 Soal Evaluasi</span>
+                </div>
+
+                <div id="discussion-list" class="space-y-4">
+                    <!-- Dynamic Discussion Render -->
+                </div>
+            </div>
+        </div>
+
+        <div id="view-leaderboard" class="hidden">
+            <div class="glass-panel rounded-2xl p-6 shadow-2xl max-w-5xl mx-auto">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200">
+                    <div class="flex items-center gap-3">
+                        <button onclick="navGoHome()" class="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-house"></i>
+                            <span class="hidden sm:inline">Beranda</span>
+                        </button>
+                        <div>
+                            <h2 class="text-xl sm:text-2xl font-black text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-trophy text-amber-500"></i>
+                                <span>Dashboard 10 Besar Nilai Tertinggi</span>
+                            </h2>
+                            <p class="text-xs text-slate-500 mt-0.5">Peringkat siswa terbaik berdasarkan total skor pengerjaan ujian.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class Tabs -->
+                <div class="flex gap-2 mb-6 border-b border-slate-200">
+                    <button onclick="filterLeaderboard('ALL')" id="tab-lb-ALL" class="lb-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-teal-600 text-teal-700">Semua Kelas</button>
+                    <button onclick="filterLeaderboard('7A')" id="tab-lb-7A" class="lb-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800">Kelas 7A (Deskripsi)</button>
+                    <button onclick="filterLeaderboard('8E')" id="tab-lb-8E" class="lb-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800">Kelas 8E (LHO)</button>
+                    <button onclick="filterLeaderboard('8F')" id="tab-lb-8F" class="lb-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800">Kelas 8F (LHO)</button>
+                </div>
+
+                <!-- Leaderboard Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-slate-600 text-[11px] uppercase tracking-wider border-b border-slate-200">
+                            <tr>
+                                <th class="p-3 text-center">Peringkat</th>
+                                <th class="p-3">Nama Siswa</th>
+                                <th class="p-3 text-center">Kelas</th>
+                                <th class="p-3 text-center">Materi</th>
+                                <th class="p-3 text-center">Nilai Total</th>
+                                <th class="p-3 text-center">Waktu</th>
+                                <th class="p-3 text-right">Tanggal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-tbody" class="divide-y divide-slate-100 text-xs">
+                            <!-- Dynamic Leaderboard Row -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-900/90 text-slate-400 py-4 text-center text-xs border-t border-slate-800 mt-auto">
+        <p>© 2026 E-Exam Bahasa Indonesia SMP (Teks Deskripsi & Laporan Hasil Observasi).</p>
+    </footer>
+
+    <div id="modal-guru" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-5xl w-full rounded-2xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <button onclick="closeGuruModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-700 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Teacher Lock -->
+            <div id="guru-auth-box" class="max-w-sm mx-auto py-8 text-center">
+                <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-1">Akses Portal Guru</h3>
+                <p class="text-xs text-slate-500 mb-4">Masukkan kata sandi guru untuk mengelola dan mengunduh nilai.</p>
+
+                <form onsubmit="handleGuruLogin(event)" class="space-y-3">
+                    <input type="password" id="input-pass-guru" placeholder="Kata Sandi (Default: guru123)" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm outline-none focus:border-indigo-500 text-center">
+                    <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow">
+                        Masuk Panel Guru
+                    </button>
+                </form>
+            </div>
+
+            <!-- Teacher Admin Dashboard -->
+            <div id="guru-dashboard-box" class="hidden space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-chalkboard-user text-indigo-600"></i>
+                            <span>Panel Guru & Laporan Rekap Nilai</span>
+                        </h3>
+                        <p class="text-xs text-slate-500">Hasil penilaian siswa kelas 7A (Deskripsi), 8E, dan 8F (LHO).</p>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="exportToExcel()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-file-excel"></i>
+                            <span>Download Laporan Excel (.xlsx)</span>
+                        </button>
+                        <button onclick="clearAllData()" class="px-3 py-2 bg-rose-100 text-rose-700 hover:bg-rose-200 font-bold rounded-xl text-xs transition flex items-center gap-1">
+                            <i class="fa-solid fa-trash"></i>
+                            <span>Reset Data Nilai</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 items-center text-xs">
+                    <span class="font-bold text-slate-600">Filter Kelas:</span>
+                    <select id="guru-filter-kelas" onchange="renderGuruTable()" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white outline-none">
+                        <option value="ALL">Semua Kelas (7A, 8E, 8F)</option>
+                        <option value="7A">Kelas 7A (Teks Deskripsi)</option>
+                        <option value="8E">Kelas 8E (Teks LHO)</option>
+                        <option value="8F">Kelas 8F (Teks LHO)</option>
+                    </select>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-100 text-slate-600 uppercase tracking-wider border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">No</th>
+                                <th class="p-3">Nama Siswa</th>
+                                <th class="p-3 text-center">Kelas</th>
+                                <th class="p-3 text-center">Materi</th>
+                                <th class="p-3 text-center">PG</th>
+                                <th class="p-3 text-center">PGK</th>
+                                <th class="p-3 text-center">B/S</th>
+                                <th class="p-3 text-center">Isian</th>
+                                <th class="p-3 text-center">Uraian</th>
+                                <th class="p-3 text-center font-bold">Skor Total</th>
+                                <th class="p-3 text-right">Tanggal</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guru-table-tbody" class="divide-y divide-slate-100">
+                            <!-- Dynamic Row -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Question Generators
+        function buildDeskripsiQuestions() {
+            const list = [];
+            const deskripsiPG = [
+                { id: 1, type: "PG", question: "Teks deskripsi adalah teks yang bertujuan untuk...", options: ["A. Menceritakan kisah tokoh", "B. Menggambarkan objek secara rinci seolah pembaca melihat sendiri", "C. Memengaruhi pembaca", "D. Menjelaskan langkah kerja"], key: "B", discussion: "Teks deskripsi menggambarkan objek secara spesifik." },
+                { id: 2, type: "PG", question: "Struktur teks deskripsi yang memuat nama objek, lokasi, dan gambaran umum adalah...", options: ["A. Identifikasi", "B. Deskripsi Bagian", "C. Simpulan", "D. Koda"], key: "A", discussion: "Identifikasi memuat informasi umum awal tentang objek." },
+                { id: 3, type: "PG", question: "Penggunaan kata panca indra 'Pemandangan laut berwarna biru jernih' melibatkan indra...", options: ["A. Penglihatan", "B. Pendengaran", "C. Penciuman", "D. Rabaan"], key: "A", discussion: "Warna biru jernih ditangkap indra penglihatan." },
+                { id: 4, type: "PG", question: "Kata khusus dari kata umum 'melihat' adalah...", options: ["A. Menatap dan mengamati", "B. Mendengar dan menyimak", "C. Merasakan dan memegang", "D. Berjalan dan melompat"], key: "A", discussion: "Menatap dan mengamati adalah turunan spesifik kata melihat." },
+                { id: 5, type: "PG", question: "Majas personifikasi yang tepat dalam deskripsi pantai adalah...", options: ["A. Nyiur melambai-lambai memanggil pengunjung", "B. Pantai Kuta sangat indah", "C. Pasirnya berwarna putih bersih", "D. Banyak kapal di laut"], key: "A", discussion: "Nyiur seolah bertindak memanggil seperti manusia." }
+            ];
+
+            for (let i = 6; i <= 50; i++) {
+                deskripsiPG.push({
+                    id: i, type: "PG",
+                    question: `[Soal Deskripsi ${i}] Bagian paragraf yang berisi perincian fisik detail mengenai keindahan objek disebut...`,
+                    options: ["A. Identifikasi", "B. Deskripsi Bagian", "C. Penutup", "D. Tesis"],
+                    key: "B",
+                    discussion: "Deskripsi bagian memuat rincian terperinci mengenai aspek fisik objek."
+                });
+            }
+            list.push(...deskripsiPG);
+
+            for (let i = 51; i <= 60; i++) {
+                list.push({
+                    id: i, type: "PGK",
+                    question: `[Soal PGK Deskripsi ${i}] Pilihlah DUA atau LEBIH unsur kebahasaan yang menjadi ciri khas teks deskripsi!`,
+                    options: [
+                        { id: "A", text: "Menggunakan kata sifat (adjektiva)" },
+                        { id: "B", text: "Menggunakan kata konkret untuk menggambarkan rincian" },
+                        { id: "C", text: "Menggunakan kalimat perintah atau konjungsi temporal" },
+                        { id: "D", text: "Melibatkan panca indra pembaca" }
+                    ],
+                    keys: ["A", "B", "D"],
+                    discussion: "Teks deskripsi banyak memakai kata sifat, kata konkret, dan panca indra."
+                });
+            }
+
+            for (let i = 61; i <= 70; i++) {
+                list.push({
+                    id: i, type: "BS",
+                    question: `[Soal B/S Deskripsi ${i}] Pernyataan: Penulisan kata depan 'di' untuk penunjuk tempat harus dipisah, contoh: 'di pantai'.`,
+                    key: "BENAR",
+                    discussion: "Kata depan 'di' sebagai tempat ditulis terpisah."
+                });
+            }
+
+            for (let i = 71; i <= 80; i++) {
+                list.push({
+                    id: i, type: "ISIAN",
+                    question: `[Soal Isian Deskripsi ${i}] Istilah struktur awal yang mengenalkan nama objek dan lokasi dinamakan bagian...`,
+                    key: ["identifikasi", "gambaran umum"],
+                    discussion: "Bagian awal disebut Identifikasi."
+                });
+            }
+
+            for (let i = 81; i <= 100; i++) {
+                list.push({
+                    id: i, type: "URAIAN",
+                    question: `[Soal Uraian Deskripsi ${i}] Buatlah 3 kalimat deskripsi tentang keindahan pemandangan gunung atau pantai dengan menggunakan kata sifat!`,
+                    rubrik: "Skor maks 2. Memuat kalimat deskripsi fisik dan kata sifat.",
+                    sampleKey: "indah, megah, hijau, biru, sejuk, cantik",
+                    discussion: "Contoh: Gunung Bromo berdiri megah dengan lautan pasir yang luas. Udara pagi terasa sangat sejuk menenangkan."
+                });
+            }
+
+            return list;
+        }
+
+        function buildLhoQuestions() {
+            const list = [];
+            const lhoPG = [
+                { id: 1, type: "PG", question: "Teks Laporan Hasil Observasi (LHO) adalah teks yang berisi penjabaran umum berdasarkan...", options: ["A. Imajinasi penulis", "B. Hasil pengamatan/observasi langsung", "C. Dongeng masyarakat", "D. Cerita rekaan"], key: "B", discussion: "Teks LHO disusun berdasarkan fakta dan hasil observasi langsung." },
+                { id: 2, type: "PG", question: "Sifat utama dari informasi yang disajikan dalam Teks LHO adalah...", options: ["A. Subjektif dan fiktif", "B. Objektif, faktual, dan sistematik", "C. Opini pribadi", "D. Menghibur"], key: "B", discussion: "Teks LHO harus berdasarkan fakta objektif tanpa dipengaruhi pendapat pribadi." },
+                { id: 3, type: "PG", question: "Struktur teks LHO secara umum terdiri atas...", options: ["A. Pernyataan umum, Deskripsi bagian, Deskripsi manfaat", "B. Orientasi, Komplikasi, Resolusi", "C. Tesis, Argumen, Penegasan ulang", "D. Langkah 1, Langkah 2, Penutup"], key: "A", discussion: "Struktur LHO: Pernyataan Umum/Klasifikasi, Deskripsi Bagian, dan Deskripsi Manfaat." },
+                { id: 4, type: "PG", question: "Kalimat definisi dalam teks LHO ditandai oleh penggunaan kata...", options: ["A. Adalah, merupakan, yaitu", "B. Serta, dan, tetapi", "C. Jika, apabila, kalau", "D. Sebaiknya, hendaknya"], key: "A", discussion: "Kata 'adalah' dan 'merupakan' digunakan untuk memberikan definisi konsep." },
+                { id: 5, type: "PG", question: "Bagian Teks LHO yang menjelaskan kegunaan atau fungsi dari objek yang diamati disebut...", options: ["A. Pernyataan Umum", "B. Deskripsi Manfaat", "C. Koda", "D. Orientasi"], key: "B", discussion: "Deskripsi manfaat memuat fungsi/keuntungan objek bagi manusia atau alam." }
+            ];
+
+            for (let i = 6; i <= 50; i++) {
+                lhoPG.push({
+                    id: i, type: "PG",
+                    question: `[Soal Teks LHO ${i}] Kalimat fakta di bawah ini yang paling tepat untuk teks laporan observasi lingkungan hidup adalah...`,
+                    options: [
+                        "A. Pohon jati menggugurkan daunnya pada musim kemarau untuk mengurangi penguapan.",
+                        "B. Sepertinya hutan ini sangat menakutkan pada malam hari.",
+                        "C. Bunga itu mungkin akan mekar esok hari.",
+                        "D. Udara di gunung ini terasa sangat dingin sekali."
+                    ],
+                    key: "A",
+                    discussion: "Opsi A merupakan fakta ilmiah hasil observasi."
+                });
+            }
+            list.push(...lhoPG);
+
+            for (let i = 51; i <= 60; i++) {
+                list.push({
+                    id: i, type: "PGK",
+                    question: `[Soal PGK LHO ${i}] Pilihlah DUA atau LEBIH kebahasaan utama dalam Teks Laporan Hasil Observasi (LHO)!`,
+                    options: [
+                        { id: "A", text: "Menggunakan kalimat definisi (kata 'adalah/merupakan')" },
+                        { id: "B", text: "Menggunakan kata teknis/istilah ilmiah sesuai bidang" },
+                        { id: "C", text: "Menggunakan kata ganti orang pertama (Saya/Aku)" },
+                        { id: "D", text: "Menggunakan verba relasional dan imbuhan asing" }
+                    ],
+                    keys: ["A", "B", "D"],
+                    discussion: "LHO menggunakan istilah ilmiah, kalimat definisi, dan penulisan objektif."
+                });
+            }
+
+            for (let i = 61; i <= 70; i++) {
+                list.push({
+                    id: i, type: "BS",
+                    question: `[Soal B/S LHO ${i}] Pernyataan: Teks Laporan Hasil Observasi (LHO) diperbolehkan memasukkan opini dan prasangka pribadi penulis.`,
+                    key: "SALAH",
+                    discussion: "Salah. LHO harus bersifat objektif dan murni fakta pengamatan."
+                });
+            }
+
+            for (let i = 71; i <= 80; i++) {
+                list.push({
+                    id: i, type: "ISIAN",
+                    question: `[Soal Isian LHO ${i}] Bagian pembuka teks LHO yang memuat klasifikasi umum mengenai objek pengamatan disebut bagian...`,
+                    key: ["pernyataan umum", "klasifikasi umum", "definisi umum"],
+                    discussion: "Bagian awal LHO adalah Pernyataan Umum / Definisi Umum."
+                });
+            }
+
+            for (let i = 81; i <= 100; i++) {
+                list.push({
+                    id: i, type: "URAIAN",
+                    question: `[Soal Uraian LHO ${i}] Tuliskan 1 contoh kalimat definisi dan 1 contoh kalimat deskripsi terkait objek tumbuhan atau hewan!`,
+                    rubrik: "Skor maks 2. Memuat kalimat definisi (adalah/merupakan) dan deskripsi fisik.",
+                    sampleKey: "adalah, merupakan, memiliki, berwarna, ukuran",
+                    discussion: "Contoh: Komodo merupakan spesies kadal terbesar di dunia. Hewan ini memiliki lidah bercabang berwarna kuning."
+                });
+            }
+
+            return list;
+        }
+
+        // State Management
+        let currentQuestions = [];
+        let currentUser = null; 
+        let currentQuestionIndex = 0;
+        let timerInterval = null;
+        let isExamActive = false;
+        const EXAM_DURATION_SECONDS = 120 * 60; // 120 Minutes
+
+        function getStoredResults() {
+            const data = localStorage.getItem('bahasa_exam_results');
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveResultToStorage(resultObj) {
+            const results = getStoredResults();
+            results.push(resultObj);
+            localStorage.setItem('bahasa_exam_results', JSON.stringify(results));
+        }
+
+        // Navigation Controller
+        function navGoHome() {
+            if (isExamActive) {
+                if (confirm("Ujian Anda sedang berlangsung. Apakah Anda yakin ingin keluar ke Halaman Beranda? Waktu pengerjaan akan dihentikan.")) {
+                    clearInterval(timerInterval);
+                    isExamActive = false;
+                    switchTab('login');
+                }
+            } else {
+                switchTab('login');
+            }
+        }
+
+        function switchTab(viewName) {
+            document.getElementById('view-login').classList.add('hidden');
+            document.getElementById('view-exam').classList.add('hidden');
+            document.getElementById('view-result').classList.add('hidden');
+            document.getElementById('view-leaderboard').classList.add('hidden');
+
+            if (viewName === 'login') document.getElementById('view-login').classList.remove('hidden');
+            if (viewName === 'exam') document.getElementById('view-exam').classList.remove('hidden');
+            if (viewName === 'result') document.getElementById('view-result').classList.remove('hidden');
+            if (viewName === 'leaderboard') {
+                document.getElementById('view-leaderboard').classList.remove('hidden');
+                renderLeaderboard('ALL');
+            }
+        }
+
+        function handleStartExam(e) {
+            e.preventDefault();
+            const nama = document.getElementById('input-nama').value.trim();
+            const kelas = document.getElementById('input-kelas').value;
+
+            if (!nama || !kelas) {
+                alert("Silakan isi nama dan pilih kelas terlebih dahulu!");
+                return;
+            }
+
+            let materi = "Teks Deskripsi";
+            if (kelas === "7A") {
+                materi = "Teks Deskripsi";
+                currentQuestions = buildDeskripsiQuestions();
+            } else {
+                materi = "Teks Laporan Hasil Observasi (LHO)";
+                currentQuestions = buildLhoQuestions();
+            }
+
+            currentUser = {
+                nama: nama,
+                kelas: kelas,
+                materi: materi,
+                answers: {},
+                remainingSeconds: EXAM_DURATION_SECONDS,
+                date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+            };
+
+            document.getElementById('display-exam-nama').innerText = currentUser.nama;
+            document.getElementById('display-exam-kelas').innerText = `Kelas ${currentUser.kelas} • ${currentUser.materi}`;
+            document.getElementById('display-avatar-class').innerText = currentUser.kelas;
+
+            isExamActive = true;
+            switchTab('exam');
+            currentQuestionIndex = 0;
+            renderQuestion();
+            renderQuestionGrid();
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            const timerDisplay = document.getElementById('exam-timer');
+
+            timerInterval = setInterval(() => {
+                if (currentUser.remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Waktu ujian telah habis! Jawaban Anda disubmit otomatis.");
+                    submitExam();
+                    return;
+                }
+
+                currentUser.remainingSeconds--;
+                const hrs = Math.floor(currentUser.remainingSeconds / 3600);
+                const mins = Math.floor((currentUser.remainingSeconds % 3600) / 60);
+                const secs = currentUser.remainingSeconds % 60;
+
+                timerDisplay.innerText = 
+                    `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            const q = currentQuestions[currentQuestionIndex];
+            document.getElementById('q-number').innerText = currentQuestionIndex + 1;
+
+            const typeLabels = {
+                "PG": "Pilihan Ganda",
+                "PGK": "PG Kompleks (Multi-Jawaban)",
+                "BS": "Benar / Salah",
+                "ISIAN": "Isian Singkat",
+                "URAIAN": "Uraian / Essay"
+            };
+            document.getElementById('q-type-badge').innerText = typeLabels[q.type] || q.type;
+            document.getElementById('q-score-weight').innerText = q.type === 'URAIAN' ? "Bobot: 2 Poin" : "Bobot: 1 Poin";
+
+            document.getElementById('q-text-container').innerHTML = `<p>${q.question}</p>`;
+
+            const optsContainer = document.getElementById('q-options-container');
+            optsContainer.innerHTML = '';
+
+            const currentAns = currentUser.answers[q.id];
+
+            if (q.type === 'PG') {
+                q.options.forEach(opt => {
+                    const optKey = opt.charAt(0);
+                    const isChecked = currentAns === optKey;
+                    optsContainer.innerHTML += `
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:border-teal-500 hover:bg-teal-50/50 cursor-pointer transition ${isChecked ? 'bg-teal-50 border-teal-500 font-medium' : 'bg-white'}">
+                            <input type="radio" name="q_opt" value="${optKey}" ${isChecked ? 'checked' : ''} onchange="saveAnswer('${q.id}', '${optKey}')" class="mt-1 text-teal-600 focus:ring-teal-500">
+                            <span class="text-sm text-slate-800">${opt}</span>
+                        </label>
+                    `;
+                });
+            } else if (q.type === 'PGK') {
+                const selectedList = Array.isArray(currentAns) ? currentAns : [];
+                q.options.forEach(opt => {
+                    const isChecked = selectedList.includes(opt.id);
+                    optsContainer.innerHTML += `
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:border-teal-500 hover:bg-teal-50/50 cursor-pointer transition ${isChecked ? 'bg-teal-50 border-teal-500 font-medium' : 'bg-white'}">
+                            <input type="checkbox" value="${opt.id}" ${isChecked ? 'checked' : ''} onchange="savePgkAnswer(${q.id}, '${opt.id}')" class="mt-1 text-teal-600 rounded focus:ring-teal-500">
+                            <span class="text-sm text-slate-800"><strong>[${opt.id}]</strong> ${opt.text}</span>
+                        </label>
+                    `;
+                });
+            } else if (q.type === 'BS') {
+                ['BENAR', 'SALAH'].forEach(val => {
+                    const isChecked = currentAns === val;
+                    optsContainer.innerHTML += `
+                        <label class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-teal-500 hover:bg-teal-50/50 cursor-pointer transition ${isChecked ? 'bg-teal-50 border-teal-500 font-bold' : 'bg-white'}">
+                            <input type="radio" name="q_bs" value="${val}" ${isChecked ? 'checked' : ''} onchange="saveAnswer('${q.id}', '${val}')" class="text-teal-600 focus:ring-teal-500">
+                            <span class="text-sm font-bold ${val === 'BENAR' ? 'text-emerald-700' : 'text-rose-700'}">${val}</span>
+                        </label>
+                    `;
+                });
+            } else if (q.type === 'ISIAN') {
+                const valText = currentAns || '';
+                optsContainer.innerHTML = `
+                    <div class="mt-2">
+                        <label class="block text-xs text-slate-500 mb-1">Tuliskan jawaban singkat Anda:</label>
+                        <input type="text" value="${valText}" oninput="saveAnswer('${q.id}', this.value)" placeholder="Ketik jawaban singkat di sini..." class="w-full p-3 border border-slate-300 rounded-xl outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-sm">
+                    </div>
+                `;
+            } else if (q.type === 'URAIAN') {
+                const valText = currentAns || '';
+                optsContainer.innerHTML = `
+                    <div class="mt-2">
+                        <label class="block text-xs text-slate-500 mb-1">Tuliskan jawaban uraian Anda secara lengkap:</label>
+                        <textarea rows="4" oninput="saveAnswer('${q.id}', this.value)" placeholder="Ketik jawaban uraian/penjelasan di sini..." class="w-full p-3 border border-slate-300 rounded-xl outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-sm">${valText}</textarea>
+                    </div>
+                `;
+            }
+
+            document.getElementById('btn-prev-q').disabled = currentQuestionIndex === 0;
+            document.getElementById('btn-prev-q').style.opacity = currentQuestionIndex === 0 ? '0.5' : '1';
+
+            renderQuestionGrid();
+        }
+
+        function saveAnswer(qId, val) {
+            currentUser.answers[qId] = val;
+            updateAnsweredBadge();
+            renderQuestionGrid();
+        }
+
+        function savePgkAnswer(qId, optId) {
+            let currentList = currentUser.answers[qId] || [];
+            if (!Array.isArray(currentList)) currentList = [];
+
+            if (currentList.includes(optId)) {
+                currentList = currentList.filter(x => x !== optId);
+            } else {
+                currentList.push(optId);
+            }
+
+            currentUser.answers[qId] = currentList;
+            updateAnsweredBadge();
+            renderQuestionGrid();
+        }
+
+        function navigateQuestion(step) {
+            const nextIdx = currentQuestionIndex + step;
+            if (nextIdx >= 0 && nextIdx < currentQuestions.length) {
+                currentQuestionIndex = nextIdx;
+                renderQuestion();
+            }
+        }
+
+        function jumpToQuestion(idx) {
+            currentQuestionIndex = idx;
+            renderQuestion();
+        }
+
+        function updateAnsweredBadge() {
+            const count = Object.keys(currentUser.answers).filter(k => {
+                const val = currentUser.answers[k];
+                return val !== undefined && val !== '' && !(Array.isArray(val) && val.length === 0);
+            }).length;
+            document.getElementById('answered-count-badge').innerText = `${count}/100`;
+        }
+
+        function renderQuestionGrid() {
+            const gridContainer = document.getElementById('q-grid-container');
+            const filterType = document.getElementById('filter-q-type').value;
+            gridContainer.innerHTML = '';
+
+            currentQuestions.forEach((q, idx) => {
+                if (filterType !== 'ALL' && q.type !== filterType) return;
+
+                const ans = currentUser.answers[q.id];
+                const isAnswered = ans !== undefined && ans !== '' && !(Array.isArray(ans) && ans.length === 0);
+                const isActive = idx === currentQuestionIndex;
+
+                let bgClass = "bg-slate-100 text-slate-700 hover:bg-slate-200";
+                if (isAnswered) bgClass = "bg-emerald-500 text-white font-bold";
+                if (isActive) bgClass = "bg-teal-600 text-white font-bold ring-2 ring-teal-300 ring-offset-1";
+
+                gridContainer.innerHTML += `
+                    <button onclick="jumpToQuestion(${idx})" class="w-full h-8 text-xs rounded-lg flex items-center justify-center transition ${bgClass}">
+                        ${idx + 1}
+                    </button>
+                `;
+            });
+        }
+
+        function confirmSubmitExam() {
+            const answeredCount = Object.keys(currentUser.answers).filter(k => {
+                const val = currentUser.answers[k];
+                return val !== undefined && val !== '' && !(Array.isArray(val) && val.length === 0);
+            }).length;
+
+            if (confirm(`Apakah Anda yakin ingin menyelesaikan ujian?\n\nSoal dijawab: ${answeredCount} / 100`)) {
+                submitExam();
+            }
+        }
+
+        function submitExam() {
+            clearInterval(timerInterval);
+            isExamActive = false;
+
+            let pgScore = 0;
+            let pgkScore = 0;
+            let bsScore = 0;
+            let isianScore = 0;
+            let uraianScore = 0;
+
+            currentQuestions.forEach(q => {
+                const userAns = currentUser.answers[q.id];
+
+                if (q.type === 'PG') {
+                    if (userAns === q.key) pgScore += 1;
+                } else if (q.type === 'PGK') {
+                    if (Array.isArray(userAns)) {
+                        const isExact = q.keys.length === userAns.length && q.keys.every(k => userAns.includes(k));
+                        if (isExact) pgkScore += 1;
+                    }
+                } else if (q.type === 'BS') {
+                    if (userAns === q.key) bsScore += 1;
+                } else if (q.type === 'ISIAN') {
+                    if (typeof userAns === 'string' && userAns.trim() !== '') {
+                        const cleanUser = userAns.trim().toLowerCase();
+                        const matched = q.key.some(k => cleanUser.includes(k.toLowerCase()));
+                        if (matched) isianScore += 1;
+                    }
+                } else if (q.type === 'URAIAN') {
+                    if (typeof userAns === 'string' && userAns.trim().length > 10) {
+                        const cleanUser = userAns.trim().toLowerCase();
+                        const keys = q.sampleKey.split(',').map(k => k.trim().toLowerCase());
+                        const matchCount = keys.filter(k => cleanUser.includes(k)).length;
+                        if (matchCount >= 2) uraianScore += 2;
+                        else if (matchCount >= 1) uraianScore += 1;
+                    }
+                }
+            });
+
+            const totalScore = pgScore + pgkScore + bsScore + isianScore + uraianScore;
+            const durationUsed = EXAM_DURATION_SECONDS - currentUser.remainingSeconds;
+            const durationMin = Math.ceil(durationUsed / 60);
+
+            const record = {
+                id: Date.now(),
+                nama: currentUser.nama,
+                kelas: currentUser.kelas,
+                materi: currentUser.materi,
+                scorePG: pgScore,
+                scorePGK: pgkScore,
+                scoreBS: bsScore,
+                scoreIsian: isianScore,
+                scoreUraian: uraianScore,
+                totalScore: totalScore,
+                durationMinutes: durationMin,
+                date: currentUser.date,
+                userAnswers: currentUser.answers
+            };
+
+            saveResultToStorage(record);
+            displayResultPage(record);
+            switchTab('result');
+        }
+
+        function displayResultPage(record) {
+            document.getElementById('result-student-info').innerText = `${record.nama} • Kelas ${record.kelas} (${record.materi})`;
+            document.getElementById('result-total-score').innerText = record.totalScore.toFixed(1);
+
+            document.getElementById('score-pg').innerText = `${record.scorePG}/50`;
+            document.getElementById('score-pgk').innerText = `${record.scorePGK}/10`;
+            document.getElementById('score-bs').innerText = `${record.scoreBS}/10`;
+            document.getElementById('score-isian').innerText = `${record.scoreIsian}/10`;
+            document.getElementById('score-uraian').innerText = `${record.scoreUraian}/20`;
+
+            let grade = "Cukup";
+            if (record.totalScore >= 90) grade = "Sangat Baik (A)";
+            else if (record.totalScore >= 80) grade = "Baik (B)";
+            else if (record.totalScore >= 70) grade = "Cukup Baik (C)";
+            else grade = "Perlu Bimbingan (D)";
+
+            document.getElementById('result-grade-label').innerText = `Predikat: ${grade}`;
+
+            renderDiscussionList(record.userAnswers);
+        }
+
+        function renderDiscussionList(userAnsMap) {
+            const discList = document.getElementById('discussion-list');
+            discList.innerHTML = '';
+
+            currentQuestions.forEach((q, idx) => {
+                const uAns = userAnsMap[q.id] || "<i>Belum Dijawab</i>";
+                let keyStr = "";
+
+                if (q.type === 'PG') keyStr = q.key;
+                else if (q.type === 'PGK') keyStr = q.keys.join(', ');
+                else if (q.type === 'BS') keyStr = q.key;
+                else if (q.type === 'ISIAN') keyStr = q.key.join(' / ');
+                else if (q.type === 'URAIAN') keyStr = q.rubrik;
+
+                discList.innerHTML += `
+                    <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 text-xs sm:text-sm">
+                        <div class="font-bold text-slate-800 flex justify-between">
+                            <span>Soal #${idx + 1} (${q.type})</span>
+                        </div>
+                        <p class="text-slate-700">${q.question}</p>
+                        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                            <div><strong class="text-indigo-600">Jawaban Anda:</strong> ${Array.isArray(uAns) ? uAns.join(', ') : uAns}</div>
+                            <div><strong class="text-emerald-600">Kunci/Rubrik:</strong> ${keyStr}</div>
+                            <div class="text-xs text-slate-500 mt-1"><strong>Pembahasan:</strong> ${q.discussion}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleDiscussionView() {
+            const disc = document.getElementById('discussion-container');
+            disc.classList.toggle('hidden');
+            const btnText = document.getElementById('btn-toggle-disc-text');
+            btnText.innerText = disc.classList.contains('hidden') ? 'Lihat Pembahasan Soal' : 'Sembunyikan Pembahasan';
+        }
+
+        function renderLeaderboard(filterClass = 'ALL') {
+            const results = getStoredResults();
+
+            let filtered = results;
+            if (filterClass !== 'ALL') {
+                filtered = results.filter(r => r.kelas === filterClass);
+            }
+
+            filtered.sort((a, b) => b.totalScore - a.totalScore || a.durationMinutes - b.durationMinutes);
+
+            const top10 = filtered.slice(0, 10);
+            const tbody = document.getElementById('leaderboard-tbody');
+            tbody.innerHTML = '';
+
+            if (top10.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400">Belum ada data nilai pengerjaan ujian.</td></tr>`;
+                return;
+            }
+
+            top10.forEach((r, idx) => {
+                let badgeClass = "bg-slate-100 text-slate-600";
+                if (idx === 0) badgeClass = "bg-amber-100 text-amber-700 font-bold border border-amber-300";
+                if (idx === 1) badgeClass = "bg-slate-200 text-slate-700 font-bold border border-slate-300";
+                if (idx === 2) badgeClass = "bg-orange-100 text-orange-700 font-bold border border-orange-300";
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 text-center">
+                            <span class="inline-block w-6 h-6 rounded-full text-xs flex items-center justify-center mx-auto ${badgeClass}">
+                                ${idx + 1}
+                            </span>
+                        </td>
+                        <td class="p-3 font-semibold text-slate-800">${r.nama}</td>
+                        <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-slate-100 font-bold">${r.kelas}</span></td>
+                        <td class="p-3 text-center text-slate-600 text-[11px]">${r.materi}</td>
+                        <td class="p-3 text-center font-extrabold text-teal-600 text-sm">${r.totalScore.toFixed(1)}</td>
+                        <td class="p-3 text-center text-slate-500">${r.durationMinutes} Menit</td>
+                        <td class="p-3 text-right text-slate-400 text-[11px]">${r.date}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterLeaderboard(cls) {
+            document.querySelectorAll('.lb-tab-btn').forEach(btn => {
+                btn.classList.remove('border-teal-600', 'text-teal-700');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+            document.getElementById(`tab-lb-${cls}`).classList.add('border-teal-600', 'text-teal-700');
+            renderLeaderboard(cls);
+        }
+
+        function openGuruModal() {
+            document.getElementById('modal-guru').classList.remove('hidden');
+        }
+
+        function closeGuruModal() {
+            document.getElementById('modal-guru').classList.add('hidden');
+        }
+
+        function handleGuruLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('input-pass-guru').value;
+            if (pass === 'guru123' || pass === 'admin') {
+                document.getElementById('guru-auth-box').classList.add('hidden');
+                document.getElementById('guru-dashboard-box').classList.remove('hidden');
+                renderGuruTable();
+            } else {
+                alert("Kata sandi salah! Silakan gunakan kata sandi 'guru123' atau 'admin'.");
+            }
+        }
+
+        function renderGuruTable() {
+            const results = getStoredResults();
+            const filterCls = document.getElementById('guru-filter-kelas').value;
+
+            let filtered = results;
+            if (filterCls !== 'ALL') {
+                filtered = results.filter(r => r.kelas === filterCls);
+            }
+
+            const tbody = document.getElementById('guru-table-tbody');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="12" class="p-4 text-center text-slate-400">Belum ada siswa yang mengerjakan ujian.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach((r, idx) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3">${idx + 1}</td>
+                        <td class="p-3 font-semibold text-slate-800">${r.nama}</td>
+                        <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-slate-100 font-bold">${r.kelas}</span></td>
+                        <td class="p-3 text-center text-[10px] text-slate-600">${r.materi}</td>
+                        <td class="p-3 text-center">${r.scorePG}</td>
+                        <td class="p-3 text-center">${r.scorePGK}</td>
+                        <td class="p-3 text-center">${r.scoreBS}</td>
+                        <td class="p-3 text-center">${r.scoreIsian}</td>
+                        <td class="p-3 text-center">${r.scoreUraian}</td>
+                        <td class="p-3 text-center font-bold text-teal-600">${r.totalScore.toFixed(1)}</td>
+                        <td class="p-3 text-right text-slate-400 text-[10px]">${r.date}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="deleteResultRecord(${r.id})" class="p-1 text-rose-600 hover:text-rose-800" title="Hapus Data">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteResultRecord(recordId) {
+            if (confirm("Hapus data nilai siswa ini?")) {
+                let results = getStoredResults();
+                results = results.filter(r => r.id !== recordId);
+                localStorage.setItem('bahasa_exam_results', JSON.stringify(results));
+                renderGuruTable();
+            }
+        }
+
+        function clearAllData() {
+            if (confirm("Apakah Anda yakin ingin MENGHAPUS SELURUH data nilai dari sistem?")) {
+                localStorage.removeItem('bahasa_exam_results');
+                renderGuruTable();
+            }
+        }
+
+        function exportToExcel() {
+            const results = getStoredResults();
+            if (results.length === 0) {
+                alert("Tidak ada data nilai untuk diekspor!");
+                return;
+            }
+
+            const excelData = results.map((r, index) => ({
+                "No": index + 1,
+                "Nama Siswa": r.nama,
+                "Kelas": r.kelas,
+                "Materi Ujian": r.materi,
+                "Skor PG (Max 50)": r.scorePG,
+                "Skor PGK (Max 10)": r.scorePGK,
+                "Skor Benar/Salah (Max 10)": r.scoreBS,
+                "Skor Isian (Max 10)": r.scoreIsian,
+                "Skor Uraian (Max 20)": r.scoreUraian,
+                "Nilai Akhir": r.totalScore,
+                "Waktu (Menit)": r.durationMinutes,
+                "Tanggal Ujian": r.date
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(excelData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Nilai Bahasa Indonesia");
+
+            worksheet["!cols"] = [{ wch: 5 }, { wch: 25 }, { wch: 10 }, { wch: 30 }];
+
+            XLSX.writeFile(workbook, `Laporan_Nilai_Ujian_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+    </script>
+</body>
+</html>
